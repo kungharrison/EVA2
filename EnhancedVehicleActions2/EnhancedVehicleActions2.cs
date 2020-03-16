@@ -23,18 +23,7 @@ namespace EnhancedVehicleActions2
             if (isSpeedometerEnabled)
             {
                 Speedometer();
-                //test
             }
-            /*
-            if (isInventoryEnabled)
-            {
-                program.Inventory();
-            }
-            if (isSoundEnabled)
-            {
-                program.Sound();
-            }
-            */
 
             VehicleIndicators(); //activates vehicle indicators
             KeyPolling(); //activates key polling
@@ -58,21 +47,6 @@ namespace EnhancedVehicleActions2
             {
                 while (true)
                 {
-                    /*
-                    if (Game.IsKeyDown(windowKey))// || (Game.IsControllerButtonDown(contTrunkKey) && Game.IsControllerButtonDownRightNow(altKey)))
-                    {
-                        Game.LocalPlayer.Character.CurrentVehicle.Windows[0].Remove();
-                        //Game.LocalPlayer.Character.CurrentVehicle.Windows[0].();
-                    }
-                    if (Game.IsKeyDown(frontDoorKey) || (Game.IsControllerButtonDown(contFrontDoorKey) && Game.IsControllerButtonDownRightNow(altKey)))
-                    {
-                        ActivateVehicleDoors(true);
-                    }
-                    if (Game.IsKeyDown(backDoorKey) || (Game.IsControllerButtonDown(contBackDoorKey) && Game.IsControllerButtonDownRightNow(altKey)))
-                    {
-                        ActivateVehicleDoors(false);
-                    }
-                    */
                     if (Game.IsKeyDown(rightBlinkerKey) || (Game.IsControllerButtonDown(contRightBlinkerKey))) //&& !Game.IsControllerButtonDown(altKey)))
                     {
                         intendedStatus = VehicleIndicatorLightsStatus.RightOnly;
@@ -89,9 +63,27 @@ namespace EnhancedVehicleActions2
                     {
                         ToggleDefaultRadio(); //change radio to default
                     }
+                    /*
+                    if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll)) //DEBUG MODE ONLY
+                    {
+                        );
+                    }
+                    */
+                    if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll))
+                    {
+                        ExitVehicle();
+                    }
                     GameFiber.Yield();
                 }
             });
+        }
+
+        public static void ExitVehicle()
+        {
+            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen).WaitForCompletion();
+            Game.LocalPlayer.Character.Tasks.AimWeaponAt(Game.LocalPlayer.Character.GetOffsetPositionFront(80f), 500).WaitForCompletion();
+            //Tasks.PlayAnimation("amb@incar@male@smoking_low@idle_a", "idle_a", 2f, 0);
+
         }
 
         public static void TireRetainment()
