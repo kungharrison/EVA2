@@ -13,8 +13,7 @@ namespace EnhancedVehicleActions2
             //grabs options from iniFile
             bool isTireRetainmentEnabled = iniFile.ReadBoolean("Options", "tireRetainment", true);
             bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
-            //bool isInventoryEnabled = iniFile.ReadBoolean("Options", "carInventory", true);
-            //bool isSoundEnabled = iniFile.ReadBoolean("Options", "blinkerSounds", true);
+            bool isDoorSystemEnabled = iniFile.ReadBoolean("Options", "doorSystem", true);
 
             if (isTireRetainmentEnabled)
             {
@@ -23,6 +22,10 @@ namespace EnhancedVehicleActions2
             if (isSpeedometerEnabled)
             {
                 Speedometer();
+            }
+            if (isDoorSystemEnabled)
+            {
+                DoorSystem();
             }
 
             VehicleIndicators(); //activates vehicle indicators
@@ -68,22 +71,62 @@ namespace EnhancedVehicleActions2
                     {
                         );
                     }
-                    */
-                    if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll))
+                    if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
                     {
-                        ExitVehicle();
+                        Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+                        Game.LocalPlayer.Character.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly);
                     }
+                    if (Game.IsControlJustReleased(75, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                    {
+                        ExitVehicle(false);
+                    }
+                    */
                     GameFiber.Yield();
                 }
             });
         }
 
-        public static void ExitVehicle()
+        public static void DoorSystem()
         {
-            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen).WaitForCompletion();
-            Game.LocalPlayer.Character.Tasks.AimWeaponAt(Game.LocalPlayer.Character.GetOffsetPositionFront(80f), 500).WaitForCompletion();
-            //Tasks.PlayAnimation("amb@incar@male@smoking_low@idle_a", "idle_a", 2f, 0);
-
+            Game.LogTrivialDebug("Door System Enabled");
+            Game.DisableControlAction(999999, GameControl.VehicleExit, false);
+            GameFiber.StartNew(delegate
+            {
+                while (true)
+                {
+                    if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                    {
+                        Game.LocalPlayer.Character.Tasks.Pause(100);
+                        GameFiber.Wait(99);
+                        if (!Game.IsControlPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                        {
+                            Game.LogTrivialDebug("Leave Door Closed");
+                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+                            /*
+                            if (Game.IsShiftKeyDownRightNow)
+                            {
+                                Game.LocalPlayer.Character.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly);
+                            }
+                            */
+                        }
+                        //Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+                        //GameFiber.Wait(1000);
+                        /*
+                        if (Game.IsControlPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                        {
+                            Game.LogTrivialDebug("Leave Door Closed");
+                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.None);
+                        }
+                        else
+                        {
+                            Game.LogTrivialDebug("Leave Door Open");
+                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+                        }
+                        */
+                    }
+                    GameFiber.Yield();
+                }
+            });
         }
 
         public static void TireRetainment()
@@ -190,13 +233,11 @@ namespace EnhancedVehicleActions2
             }
             else
             {
-                Game.LogTrivialDebug("Error: Valid vehicle not detected");
                 return;
             }
 
             if (Menu.isRadioStationEnabled)
             {
-                Game.LogTrivialDebug("RadioEnabled");
                 vehicle.RadioStation = (RadioStation)intendedRadio;
             }
         }
