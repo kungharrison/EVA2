@@ -102,6 +102,7 @@ namespace EnhancedVehicleActions2
                         {
                             Game.LogTrivialDebug("Leave Door Closed");
                             Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+                            //Game.LocalPlayer.Character.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly);
                             /*
                             if (Game.IsShiftKeyDownRightNow)
                             {
