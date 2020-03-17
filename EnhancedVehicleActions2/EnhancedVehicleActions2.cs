@@ -32,6 +32,7 @@ namespace EnhancedVehicleActions2
             KeyPolling(); //activates key polling
             _ = new Menu(); //activates menu
         }
+
         public static void KeyPolling()
         {
             //grabs keybindings from iniFile
@@ -94,36 +95,22 @@ namespace EnhancedVehicleActions2
             {
                 while (true)
                 {
-                    if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                    Ped player = Game.LocalPlayer.Character;
+
+                    if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false))
                     {
-                        Game.LocalPlayer.Character.Tasks.Pause(100);
+                        player.Tasks.Pause(100);
                         GameFiber.Wait(99);
-                        if (!Game.IsControlPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
+                        if (!Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false))
                         {
-                            Game.LogTrivialDebug("Leave Door Closed");
-                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                            //Game.LocalPlayer.Character.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly);
-                            /*
-                            if (Game.IsShiftKeyDownRightNow)
+                            player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
+
+                            if (player.Inventory.Weapons.Contains(WeaponHash.CombatPistol) && Game.IsControlPressed(0, GameControl.Aim))
                             {
-                                Game.LocalPlayer.Character.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask | AnimationFlags.UpperBodyOnly);
+                                player.Inventory.EquippedWeapon = WeaponHash.CombatPistol;
+                                player.Tasks.PlayAnimation("veh@std@ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
                             }
-                            */
                         }
-                        //Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                        //GameFiber.Wait(1000);
-                        /*
-                        if (Game.IsControlPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
-                        {
-                            Game.LogTrivialDebug("Leave Door Closed");
-                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.None);
-                        }
-                        else
-                        {
-                            Game.LogTrivialDebug("Leave Door Open");
-                            Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                        }
-                        */
                     }
                     GameFiber.Yield();
                 }
