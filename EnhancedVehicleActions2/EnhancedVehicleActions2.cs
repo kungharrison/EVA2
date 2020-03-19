@@ -25,12 +25,13 @@ namespace EnhancedVehicleActions2
             }
             if (isDoorSystemEnabled)
             {
-                DoorSystem();
+                _ = new DoorSystem();
             }
 
             VehicleIndicators(); //activates vehicle indicators
             KeyPolling(); //activates key polling
             _ = new Menu(); //activates menu
+            Game.LogTrivial("Enhanced Vehicle Actions 2 sucessfully loaded");
         }
 
         public static void KeyPolling()
@@ -82,50 +83,6 @@ namespace EnhancedVehicleActions2
                         ExitVehicle(false);
                     }
                     */
-                    GameFiber.Yield();
-                }
-            });
-        }
-
-        public static void DoorSystem()
-        {
-            Game.LogTrivialDebug("Door System Enabled");
-            Game.DisableControlAction(999999, GameControl.VehicleExit, false);
-            GameFiber.StartNew(delegate
-            {
-                while (true)
-                {
-                    Ped player = Game.LocalPlayer.Character;
-
-                    if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false))
-                    {
-                        if (Game.IsControlPressed(0, GameControl.Aim)) //Use felony stop animations
-                        {                          
-                            player.Tasks.Pause(100);
-                            GameFiber.Wait(99);
-                            if (!Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false)) //Short press will activate
-                            {
-                                player.Inventory.EquippedWeapon = WeaponHash.CombatPistol;
-                                player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                                player.Tasks.PlayAnimation("veh@std@ds@exit_to_aim_1h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
-                            }
-                            else //Long press will activate
-                            {
-                                player.Inventory.EquippedWeapon = WeaponHash.PumpShotgun;
-                                player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                                player.Tasks.PlayAnimation("veh@low@front_ds@exit_to_aim_2h", "ds_get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
-                            }
-                        }
-                        else
-                        {
-                            player.Tasks.Pause(100);
-                            GameFiber.Wait(99);
-                            if (!Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false)) //Short press will activate
-                            {
-                                player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                            }
-                        }
-                    }
                     GameFiber.Yield();
                 }
             });
