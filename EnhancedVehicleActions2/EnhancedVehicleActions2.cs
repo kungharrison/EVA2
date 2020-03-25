@@ -71,7 +71,7 @@ namespace EnhancedVehicleActions2
                     /*
                     if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll)) //DEBUG MODE ONLY
                     {
-                        );
+
                     }
                     if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
                     {

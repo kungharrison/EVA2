@@ -20,6 +20,9 @@ namespace EnhancedVehicleActions2
         {
             Game.LogTrivialDebug("Door System Enabled");
 
+            //grabs options from iniFile
+            bool isAnimationEnabled = EnhancedVehicleActions2.iniFile.ReadBoolean("Other", "felonyStopAnimations", true);
+
             //grabs player's preferred primary and secondary weapons for felony stop exit animations
             System.Type weaponType = typeof(WeaponHash);
             WeaponHash primaryWeapon = (WeaponHash)EnhancedVehicleActions2.iniFile.ReadEnum(weaponType, "Other", "primaryWeapon", WeaponHash.PumpShotgun);
@@ -27,8 +30,8 @@ namespace EnhancedVehicleActions2
 
             AnimationDictionary jeepExit1h = new AnimationDictionary("veh@jeep@mesa@ds@exit_to_aim_1h"); //get_out_north
             AnimationDictionary jeepExit2h = new AnimationDictionary("veh@jeep@mesa@ds@exit_to_aim_2h");
-            AnimationDictionary vanExit1h = new AnimationDictionary("veh@van@policet@ds@exit_to_aim"); //get_out_north
-            AnimationDictionary vanExit2h = new AnimationDictionary("veh@van@riot@ds@exit_to_aim_2h");
+            //AnimationDictionary vanExit1h = new AnimationDictionary("veh@van@policet@ds@exit_to_aim"); //get_out_north
+            //AnimationDictionary vanExit2h = new AnimationDictionary("veh@van@riot@ds@exit_to_aim_2h");
             AnimationDictionary lowExit1h = new AnimationDictionary("veh@low@front_ds@exit_to_aim_1h"); //ds_get_out_north
             AnimationDictionary lowExit2h = new AnimationDictionary("veh@low@front_ds@exit_to_aim_2h");
             AnimationDictionary stdExit1h = new AnimationDictionary("veh@std@ds@exit_to_aim_1h"); //ds_get_out_north
@@ -53,12 +56,14 @@ namespace EnhancedVehicleActions2
                             {
                                 player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
                                 player.Inventory.EquippedWeapon = secondaryWeapon;
+
                                 playerWeapon = CurrentWeapon.Secondary;
                             }
                             else if (Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false) && player.Inventory.Weapons.Contains(primaryWeapon)) //Long press will activate
                             {
                                 player.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
                                 player.Inventory.EquippedWeapon = primaryWeapon;
+
                                 playerWeapon = CurrentWeapon.Primary;
                             }
                             else
@@ -68,41 +73,28 @@ namespace EnhancedVehicleActions2
 
                             VehicleClass vehicleClass = player.CurrentVehicle.Class;
                             Model vehicleModel = player.CurrentVehicle.Model;
-                            if (vehicleClass == VehicleClass.Emergency)
+                            if (isAnimationEnabled && vehicleClass == VehicleClass.Emergency)
                             {
-                                if (vehicleModel == new Model("sheriff2") || vehicleModel == new Model("policeold1"))
+                                if (vehicleModel == new Model("sheriff2") || vehicleModel == new Model("policeold1") || vehicleModel == new Model("riot") || vehicleModel == new Model("policet"))
                                 {
                                     if (playerWeapon == CurrentWeapon.Primary)
                                     {
-                                        player.Tasks.PlayAnimation(jeepExit2h, "get_out_north", 2f, AnimationFlags.SecondaryTask);
+                                        player.Tasks.PlayAnimation(jeepExit2h, "get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
                                     }
                                     else if (playerWeapon == CurrentWeapon.Secondary)
                                     {
-                                        player.Tasks.PlayAnimation(jeepExit1h, "get_out_north", 2f, AnimationFlags.SecondaryTask);
+                                        player.Tasks.PlayAnimation(jeepExit1h, "get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
                                     }
-                                }
-                                else if (vehicleModel == new Model("riot") || vehicleModel == new Model("policet"))
-                                {
-                                    if (playerWeapon == CurrentWeapon.Primary)
-                                    {
-                                        player.Tasks.PlayAnimation(vanExit2h, "get_out_north", 2f, AnimationFlags.SecondaryTask);
-                                    }
-                                    else if (playerWeapon == CurrentWeapon.Secondary)
-                                    {
-                                        player.Tasks.PlayAnimation(vanExit1h, "get_out_north", 2f, AnimationFlags.SecondaryTask);
-                                    }
-                                }
+                                }                  
                                 else
                                 {
-                                    Game.LogTrivialDebug("Emergency Felony Stop Animations");
                                     if (playerWeapon == CurrentWeapon.Primary)
                                     {
-                                        Game.LogTrivialDebug("Emergency Felony Stop Animations2");
-                                        player.Tasks.PlayAnimation(stdExit2h, "ds_get_out_north", 2f, AnimationFlags.SecondaryTask);
+                                        player.Tasks.PlayAnimation(lowExit2h, "ds_get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
                                     }
                                     else if (playerWeapon == CurrentWeapon.Secondary)
                                     {
-                                        player.Tasks.PlayAnimation(stdExit1h, "ds_get_out_north", 2f, AnimationFlags.SecondaryTask);
+                                        player.Tasks.PlayAnimation(stdExit1h, "ds_get_out_north", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
                                     }
                                 }
                             }
