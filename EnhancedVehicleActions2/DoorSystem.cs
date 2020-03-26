@@ -49,8 +49,8 @@ namespace EnhancedVehicleActions2
                     {
                         if (Game.IsControlPressed(0, GameControl.Aim)) //Use felony stop animations
                         {
-                            player.Tasks.Pause(100);
-                            GameFiber.Wait(99);
+                            player.Tasks.Pause(300);
+                            GameFiber.Wait(299);
 
                             if (!Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false) && player.Inventory.Weapons.Contains(secondaryWeapon)) //Short press will activate
                             {
@@ -101,8 +101,8 @@ namespace EnhancedVehicleActions2
                         }
                         else //Felony stop animations will not be used
                         {
-                            player.Tasks.Pause(100);
-                            GameFiber.Wait(99);
+                            player.Tasks.Pause(300);
+                            GameFiber.Wait(299);
 
                             if (!Game.IsControlPressed(0, GameControl.VehicleExit) && player.IsInAnyVehicle(false)) //Short press will activate
                             {
