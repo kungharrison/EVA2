@@ -231,6 +231,35 @@ namespace EnhancedVehicleActions2
             Game.LogTrivialDebug("Alarm Activated");
         }
 
+        public static bool isVehicleLocked = false;
+        public static void ToggleVehicleLock()
+        {
+            Vehicle vehicle;
+
+            if (Game.LocalPlayer.Character.CurrentVehicle.Exists())
+            {
+                vehicle = Game.LocalPlayer.Character.CurrentVehicle;
+            }
+            else if (Game.LocalPlayer.Character.LastVehicle.Exists())
+            {
+                vehicle = Game.LocalPlayer.Character.LastVehicle;
+            }
+            else
+            {
+                Game.LogTrivialDebug("Error: Valid vehicle not detected");
+                return;
+            }
+
+            if (isVehicleLocked)
+            {
+                vehicle.LockStatus = VehicleLockStatus.Locked;
+            }
+            else
+            {
+                vehicle.LockStatus = VehicleLockStatus.Unlocked;
+            }
+        }
+
         //Activates door using index
         public static void ActivateVehicleDoors(int index)
         {

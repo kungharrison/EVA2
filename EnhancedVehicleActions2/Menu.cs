@@ -1,6 +1,7 @@
 ﻿using Rage;
 using RAGENativeUI;
 using RAGENativeUI.Elements;
+using System.IO;
 
 namespace EnhancedVehicleActions2
 {
@@ -10,6 +11,7 @@ namespace EnhancedVehicleActions2
         private static UIMenu mainMenu;
         private static MenuPool _menuPool;
         private static UIMenuCheckboxItem speedometerCheckbox;
+        private static UIMenuCheckboxItem vehicleLockCheckbox;
         private static UIMenuCheckboxItem alarmKeyCheckbox;
         private static UIMenuCheckboxItem interiorLightKeyCheckbox;
         private static UIMenuListItem vehicleDoorsList;
@@ -17,8 +19,10 @@ namespace EnhancedVehicleActions2
 
         //iniFile information gathered
         private static readonly InitializationFile iniFile = EnhancedVehicleActions2.iniFile; //grabs iniFile from EnhancedVehicleActions2
-        private readonly bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
+        private static readonly bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
         public static readonly bool isRadioStationEnabled = iniFile.ReadBoolean("Options", "toggleableRadioStation", true);
+        private static readonly bool isVehicleLockEnabled = iniFile.ReadBoolean("Options", "toggleableLock", true);
+        //private static readonly bool isEngineSystemEnabled = iniFile.ReadBoolean("Options", "toggleableEngine", true);
         private static readonly System.Windows.Forms.Keys actionKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(typeof(System.Windows.Forms.Keys), "KeyBindings", "ActionKey", System.Windows.Forms.Keys.F7);
         private static readonly ControllerButtons controllerActionKey = (ControllerButtons)iniFile.ReadEnum(typeof(ControllerButtons), "ControllerKeyBindings", "ControllerActionKey", ControllerButtons.RightThumb);
 
@@ -33,6 +37,10 @@ namespace EnhancedVehicleActions2
             if (isSpeedometerEnabled) //checks if speedometer is enabled to add to pool
             {
                 mainMenu.AddItem(speedometerCheckbox = new UIMenuCheckboxItem("Speedometer", false, "Enables/Disables Speedometer"));
+            }
+            if (isVehicleLockEnabled) //checks if speedometer is enabled to add to pool
+            {
+                mainMenu.AddItem(vehicleLockCheckbox = new UIMenuCheckboxItem("Vehicle Lock", false, "Locks/Unlocks Vehicle"));
             }
             mainMenu.AddItem(alarmKeyCheckbox = new UIMenuCheckboxItem("Car Alarm", false, "Toggles Car Alarm"));
             mainMenu.AddItem(interiorLightKeyCheckbox = new UIMenuCheckboxItem("Interior Light", false, "Toggles Interior Light"));
@@ -96,6 +104,19 @@ namespace EnhancedVehicleActions2
                 {
                     EnhancedVehicleActions2.isInteriorLightsEnabled = Checked;
                     EnhancedVehicleActions2.ToggleInteriorLights();
+                }
+                else if (checkbox == vehicleLockCheckbox)
+                { 
+                    if (Game.LocalPlayer.Character.Tasks.CurrentTaskStatus == TaskStatus.NoTask && !Game.LocalPlayer.Character.IsGettingIntoVehicle)
+                    {
+                        Game.LogTrivial("" + Game.LocalPlayer.Character.Tasks.CurrentTaskStatus);
+                        EnhancedVehicleActions2.isVehicleLocked = Checked;
+                        EnhancedVehicleActions2.ToggleVehicleLock();
+                    }
+                    else
+                    {
+                        vehicleLockCheckbox.Checked = !Checked;
+                    }
                 }
             }
         }
