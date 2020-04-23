@@ -1,4 +1,7 @@
 ﻿using Rage;
+using Rage.Native;
+using System;
+using System.Security.Policy;
 
 [assembly: Rage.Attributes.Plugin("EnhancedVehicleActions2", Description = "Enhanced vehicle actions and more", Author = "holexion")]
 
@@ -14,6 +17,7 @@ namespace EnhancedVehicleActions2
             bool isTireRetainmentEnabled = iniFile.ReadBoolean("Options", "tireRetainment", true);
             bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
             bool isDoorSystemEnabled = iniFile.ReadBoolean("Options", "doorSystem", true);
+            bool isBrakeLightsEnabled = iniFile.ReadBoolean("Options", "brakeLights", true);
 
             if (isTireRetainmentEnabled)
             {
@@ -22,6 +26,10 @@ namespace EnhancedVehicleActions2
             if (isSpeedometerEnabled)
             {
                 Speedometer();
+            }
+            if (isBrakeLightsEnabled)
+            {
+                BrakeLights();
             }
             if (isDoorSystemEnabled)
             {
@@ -71,8 +79,9 @@ namespace EnhancedVehicleActions2
                     /*
                     if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll)) //DEBUG MODE ONLY
                     {
-
+                        Rage.Native.NativeFunction.Natives.SET_VEHICLE_BRAKE_LIGHTS(Game.LocalPlayer.Character.CurrentVehicle, true);
                     }
+                    
                     if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
                     {
                         Game.LocalPlayer.Character.Tasks.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
@@ -83,6 +92,28 @@ namespace EnhancedVehicleActions2
                         ExitVehicle(false);
                     }
                     */
+                    GameFiber.Yield();
+                }
+            });
+        }
+
+        public static void BrakeLights()
+        {
+            GameFiber.StartNew(delegate
+            {
+                while (true)
+                {
+                    Vehicle playerVehicle = Game.LocalPlayer.Character.CurrentVehicle;
+                    Vehicle lastPlayerVehicle = Game.LocalPlayer.Character.LastVehicle;
+
+                    if (playerVehicle.Exists() && playerVehicle.Speed < 0.1)
+                    {
+                        Rage.Native.NativeFunction.Natives.SET_VEHICLE_BRAKE_LIGHTS(Game.LocalPlayer.Character.CurrentVehicle, true);
+                    }
+                    else if (lastPlayerVehicle.Exists() && lastPlayerVehicle.Speed < 0.1)
+                    {
+                        Rage.Native.NativeFunction.Natives.SET_VEHICLE_BRAKE_LIGHTS(Game.LocalPlayer.Character.LastVehicle, true);
+                    }
                     GameFiber.Yield();
                 }
             });
