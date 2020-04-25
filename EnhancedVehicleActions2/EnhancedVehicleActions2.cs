@@ -79,7 +79,14 @@ namespace EnhancedVehicleActions2
                     /*
                     if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll)) //DEBUG MODE ONLY
                     {
-                        Rage.Native.NativeFunction.Natives.SET_VEHICLE_BRAKE_LIGHTS(Game.LocalPlayer.Character.CurrentVehicle, true);
+                        Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 0);
+                        Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 1);
+                        Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 2);
+                        Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 3);
+                    }
+                    if (Game.IsKeyDown(System.Windows.Forms.Keys.Pause)) //DEBUG MODE ONLY
+                    {
+                        Rage.Native.NativeFunction.Natives.ROLL_DOWN_WINDOWS(Game.LocalPlayer.Character.CurrentVehicle);
                     }
                     
                     if (Game.IsControlJustPressed(0, GameControl.VehicleExit) && Game.LocalPlayer.Character.IsInAnyVehicle(false))
@@ -288,6 +295,27 @@ namespace EnhancedVehicleActions2
             else
             {
                 vehicle.LockStatus = VehicleLockStatus.Unlocked;
+            }
+        }
+
+        public static bool areWindowsUp = true;
+        public static void ToggleWindows()
+        {
+            if (Game.LocalPlayer.Character.CurrentVehicle.Exists())
+            {
+                if (!areWindowsUp)
+                {
+                    Rage.Native.NativeFunction.Natives.ROLL_DOWN_WINDOWS(Game.LocalPlayer.Character.CurrentVehicle);
+                    areWindowsUp = !areWindowsUp;
+                }
+                else
+                {
+                    Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 0);
+                    Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 1);
+                    Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 2);
+                    Rage.Native.NativeFunction.Natives.ROLL_UP_WINDOW(Game.LocalPlayer.Character.CurrentVehicle, 3);
+                    areWindowsUp = !areWindowsUp;
+                }
             }
         }
 

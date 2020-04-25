@@ -14,6 +14,7 @@ namespace EnhancedVehicleActions2
         private static UIMenuCheckboxItem vehicleLockCheckbox;
         private static UIMenuCheckboxItem alarmKeyCheckbox;
         private static UIMenuCheckboxItem interiorLightKeyCheckbox;
+        private static UIMenuCheckboxItem windowCheckbox;
         private static UIMenuListItem vehicleDoorsList;
         private static UIMenuListItem radioStationList;
 
@@ -44,6 +45,7 @@ namespace EnhancedVehicleActions2
             }
             mainMenu.AddItem(alarmKeyCheckbox = new UIMenuCheckboxItem("Car Alarm", false, "Toggles Car Alarm"));
             mainMenu.AddItem(interiorLightKeyCheckbox = new UIMenuCheckboxItem("Interior Light", false, "Toggles Interior Light"));
+            mainMenu.AddItem(windowCheckbox = new UIMenuCheckboxItem("Vehicle Windows", true, "Rolls Up/Down Windows"));
             mainMenu.AddItem(vehicleDoorsList = new UIMenuListItem("Vehicle Doors", "Select which door of your vehicle to open and close", "All", "Front left", "Front right", "Rear left", "Rear right", "Hood", "Trunk"));
             if (isRadioStationEnabled) //checks if radio station is enabled to add to pool
             {
@@ -106,7 +108,7 @@ namespace EnhancedVehicleActions2
                     EnhancedVehicleActions2.ToggleInteriorLights();
                 }
                 else if (checkbox == vehicleLockCheckbox)
-                { 
+                {
                     if (Game.LocalPlayer.Character.Tasks.CurrentTaskStatus == TaskStatus.NoTask && !Game.LocalPlayer.Character.IsGettingIntoVehicle)
                     {
                         Game.LogTrivial("" + Game.LocalPlayer.Character.Tasks.CurrentTaskStatus);
@@ -118,50 +120,61 @@ namespace EnhancedVehicleActions2
                         vehicleLockCheckbox.Checked = !Checked;
                     }
                 }
+                else if (checkbox == windowCheckbox)
+                {
+                    EnhancedVehicleActions2.areWindowsUp = Checked;
+                    EnhancedVehicleActions2.ToggleWindows();
+                }
             }
         }
 
         public static void OnListChange(UIMenu sender, UIMenuListItem list, int index)
         {
-            if (sender == mainMenu && list == radioStationList)
+            if (sender == mainMenu)
             {
-                EnhancedVehicleActions2.intendedRadio = index - 1;
-                EnhancedVehicleActions2.ToggleDefaultRadio();
-               //iniFile.Write("Options", "defaultRadioStation", "None");
+                if (list == radioStationList)
+                {
+                    EnhancedVehicleActions2.intendedRadio = index - 1;
+                    EnhancedVehicleActions2.ToggleDefaultRadio();
+                    //iniFile.Write("Options", "defaultRadioStation", "None");
+                }
             }
         }
 
         public static void OnItemSelect(UIMenu sender, UIMenuItem selectedItem, int index)
         {
-            if (sender == mainMenu && selectedItem == vehicleDoorsList)
+            if (sender == mainMenu)
             {
-                if (vehicleDoorsList.SelectedItem.DisplayText == "All")
+                if (selectedItem == vehicleDoorsList)
                 {
-                    EnhancedVehicleActions2.ActivateVehicleDoors();
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Front left")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(0);
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Front right")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(1);
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear left")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(2);
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear right")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(3);
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Hood")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(4);
-                }
-                else if (vehicleDoorsList.SelectedItem.DisplayText == "Trunk")
-                {
-                    EnhancedVehicleActions2.ActivateVehicleDoors(5);
+                    if (vehicleDoorsList.SelectedItem.DisplayText == "All")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors();
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Front left")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(0);
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Front right")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(1);
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear left")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(2);
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear right")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(3);
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Hood")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(4);
+                    }
+                    else if (vehicleDoorsList.SelectedItem.DisplayText == "Trunk")
+                    {
+                        EnhancedVehicleActions2.ActivateVehicleDoors(5);
+                    }
                 }
             }
         }
