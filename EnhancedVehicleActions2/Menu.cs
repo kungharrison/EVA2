@@ -15,6 +15,7 @@ namespace EnhancedVehicleActions2
         private static UIMenuCheckboxItem alarmKeyCheckbox;
         private static UIMenuCheckboxItem interiorLightKeyCheckbox;
         private static UIMenuCheckboxItem windowCheckbox;
+        private static UIMenuListItem seatbeltList;
         private static UIMenuListItem vehicleDoorsList;
         private static UIMenuListItem radioStationList;
 
@@ -23,6 +24,7 @@ namespace EnhancedVehicleActions2
         private static readonly bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
         public static readonly bool isRadioStationEnabled = iniFile.ReadBoolean("Options", "toggleableRadioStation", true);
         private static readonly bool isVehicleLockEnabled = iniFile.ReadBoolean("Options", "toggleableLock", true);
+        private static readonly bool isSeatbeltEnabled = iniFile.ReadBoolean("Options", "toggleableSeatbelt", true);
         //private static readonly bool isEngineSystemEnabled = iniFile.ReadBoolean("Options", "toggleableEngine", true);
         private static readonly System.Windows.Forms.Keys actionKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(typeof(System.Windows.Forms.Keys), "KeyBindings", "ActionKey", System.Windows.Forms.Keys.F7);
         private static readonly ControllerButtons controllerActionKey = (ControllerButtons)iniFile.ReadEnum(typeof(ControllerButtons), "ControllerKeyBindings", "ControllerActionKey", ControllerButtons.RightThumb);
@@ -39,13 +41,18 @@ namespace EnhancedVehicleActions2
             {
                 mainMenu.AddItem(speedometerCheckbox = new UIMenuCheckboxItem("Speedometer", false, "Enables/Disables Speedometer"));
             }
-            if (isVehicleLockEnabled) //checks if speedometer is enabled to add to pool
+            if (isVehicleLockEnabled) //checks if vehicle lock is enabled to add to pool
             {
                 mainMenu.AddItem(vehicleLockCheckbox = new UIMenuCheckboxItem("Vehicle Lock", false, "Locks/Unlocks Vehicle"));
             }
             mainMenu.AddItem(alarmKeyCheckbox = new UIMenuCheckboxItem("Car Alarm", false, "Toggles Car Alarm"));
             mainMenu.AddItem(interiorLightKeyCheckbox = new UIMenuCheckboxItem("Interior Light", false, "Toggles Interior Light"));
             mainMenu.AddItem(windowCheckbox = new UIMenuCheckboxItem("Vehicle Windows", true, "Rolls Up/Down Windows"));
+            if (isSeatbeltEnabled) //checks if seatbelt is enabled to add to pool
+            {
+                mainMenu.AddItem(seatbeltList = new UIMenuListItem("Seat Belt", "Changes when seatbelt is fastened", "Auto", "Always Off"));
+                Seatbelt.MainLogic();
+            }
             mainMenu.AddItem(vehicleDoorsList = new UIMenuListItem("Vehicle Doors", "Select which door of your vehicle to open and close", "All", "Front left", "Front right", "Rear left", "Rear right", "Hood", "Trunk"));
             if (isRadioStationEnabled) //checks if radio station is enabled to add to pool
             {
@@ -137,6 +144,10 @@ namespace EnhancedVehicleActions2
                     EnhancedVehicleActions2.intendedRadio = index - 1;
                     EnhancedVehicleActions2.ToggleDefaultRadio();
                     //iniFile.Write("Options", "defaultRadioStation", "None");
+                }
+                if (list == seatbeltList)
+                {
+                    Seatbelt.ChangeMode(index);
                 }
             }
         }
