@@ -21,12 +21,12 @@ namespace EnhancedVehicleActions2
             Game.LogTrivialDebug("Door System Enabled");
 
             //grabs options from iniFile
-            bool isAnimationEnabled = EnhancedVehicleActions2.iniFile.ReadBoolean("Other", "felonyStopAnimations", true);
+            bool isAnimationEnabled = EntryPoint.iniFile.ReadBoolean("Other", "felonyStopAnimations", true);
 
             //grabs player's preferred primary and secondary weapons for felony stop exit animations
             System.Type weaponType = typeof(WeaponHash);
-            WeaponHash primaryWeapon = (WeaponHash)EnhancedVehicleActions2.iniFile.ReadEnum(weaponType, "Other", "primaryWeapon", WeaponHash.PumpShotgun);
-            WeaponHash secondaryWeapon = (WeaponHash)EnhancedVehicleActions2.iniFile.ReadEnum(weaponType, "Other", "secondaryWeapon", WeaponHash.CombatPistol);
+            WeaponHash primaryWeapon = (WeaponHash)EntryPoint.iniFile.ReadEnum(weaponType, "Other", "primaryWeapon", WeaponHash.PumpShotgun);
+            WeaponHash secondaryWeapon = (WeaponHash)EntryPoint.iniFile.ReadEnum(weaponType, "Other", "secondaryWeapon", WeaponHash.CombatPistol);
 
             AnimationDictionary jeepExit1h = new AnimationDictionary("veh@jeep@mesa@ds@exit_to_aim_1h"); //get_out_north
             AnimationDictionary jeepExit2h = new AnimationDictionary("veh@jeep@mesa@ds@exit_to_aim_2h");

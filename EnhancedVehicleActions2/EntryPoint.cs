@@ -7,9 +7,10 @@ using System.Security.Policy;
 
 namespace EnhancedVehicleActions2
 {
-    public class EnhancedVehicleActions2
+    public class EntryPoint
     {
         //iniFile contains player keybindings
+
         public static InitializationFile iniFile = new InitializationFile("plugins/EnhancedVehicleActions2.ini");
         public static void Main()
         {

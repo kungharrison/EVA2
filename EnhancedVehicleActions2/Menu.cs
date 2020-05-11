@@ -20,7 +20,7 @@ namespace EnhancedVehicleActions2
         private static UIMenuListItem radioStationList;
 
         //iniFile information gathered
-        private static readonly InitializationFile iniFile = EnhancedVehicleActions2.iniFile; //grabs iniFile from EnhancedVehicleActions2
+        private static readonly InitializationFile iniFile = EntryPoint.iniFile; //grabs iniFile from EnhancedVehicleActions2
         private static readonly bool isSpeedometerEnabled = iniFile.ReadBoolean("Options", "toggleableSpeedometer", true);
         public static readonly bool isRadioStationEnabled = iniFile.ReadBoolean("Options", "toggleableRadioStation", true);
         private static readonly bool isVehicleLockEnabled = iniFile.ReadBoolean("Options", "toggleableLock", true);
@@ -96,31 +96,31 @@ namespace EnhancedVehicleActions2
                 {
                     if (Checked)
                     {
-                        EnhancedVehicleActions2.isSpeedometerEnabled = true;
+                        EntryPoint.isSpeedometerEnabled = true;
                     }
                     else
                     {
-                        EnhancedVehicleActions2.isSpeedometerEnabled = false;
+                        EntryPoint.isSpeedometerEnabled = false;
                         Game.DisplaySubtitle("");
                     }
                 }
                 else if (checkbox == alarmKeyCheckbox)
                 {
-                    EnhancedVehicleActions2.isAlarmEnabled = Checked;
-                    EnhancedVehicleActions2.ToggleAlarm();
+                    EntryPoint.isAlarmEnabled = Checked;
+                    EntryPoint.ToggleAlarm();
                 }
                 else if (checkbox == interiorLightKeyCheckbox)
                 {
-                    EnhancedVehicleActions2.isInteriorLightsEnabled = Checked;
-                    EnhancedVehicleActions2.ToggleInteriorLights();
+                    EntryPoint.isInteriorLightsEnabled = Checked;
+                    EntryPoint.ToggleInteriorLights();
                 }
                 else if (checkbox == vehicleLockCheckbox)
                 {
                     if (Game.LocalPlayer.Character.Tasks.CurrentTaskStatus == TaskStatus.NoTask && !Game.LocalPlayer.Character.IsGettingIntoVehicle)
                     {
                         Game.LogTrivial("" + Game.LocalPlayer.Character.Tasks.CurrentTaskStatus);
-                        EnhancedVehicleActions2.isVehicleLocked = Checked;
-                        EnhancedVehicleActions2.ToggleVehicleLock();
+                        EntryPoint.isVehicleLocked = Checked;
+                        EntryPoint.ToggleVehicleLock();
                     }
                     else
                     {
@@ -129,8 +129,8 @@ namespace EnhancedVehicleActions2
                 }
                 else if (checkbox == windowCheckbox)
                 {
-                    EnhancedVehicleActions2.areWindowsUp = Checked;
-                    EnhancedVehicleActions2.ToggleWindows();
+                    EntryPoint.areWindowsUp = Checked;
+                    EntryPoint.ToggleWindows();
                 }
             }
         }
@@ -141,8 +141,8 @@ namespace EnhancedVehicleActions2
             {
                 if (list == radioStationList)
                 {
-                    EnhancedVehicleActions2.intendedRadio = index - 1;
-                    EnhancedVehicleActions2.ToggleDefaultRadio();
+                    EntryPoint.intendedRadio = index - 1;
+                    EntryPoint.ToggleDefaultRadio();
                     //iniFile.Write("Options", "defaultRadioStation", "None");
                 }
                 if (list == seatbeltList)
@@ -160,31 +160,31 @@ namespace EnhancedVehicleActions2
                 {
                     if (vehicleDoorsList.SelectedItem.DisplayText == "All")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors();
+                        EntryPoint.ActivateVehicleDoors();
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Front left")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(0);
+                        EntryPoint.ActivateVehicleDoors(0);
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Front right")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(1);
+                        EntryPoint.ActivateVehicleDoors(1);
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear left")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(2);
+                        EntryPoint.ActivateVehicleDoors(2);
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Rear right")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(3);
+                        EntryPoint.ActivateVehicleDoors(3);
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Hood")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(4);
+                        EntryPoint.ActivateVehicleDoors(4);
                     }
                     else if (vehicleDoorsList.SelectedItem.DisplayText == "Trunk")
                     {
-                        EnhancedVehicleActions2.ActivateVehicleDoors(5);
+                        EntryPoint.ActivateVehicleDoors(5);
                     }
                 }
             }
