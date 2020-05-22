@@ -1,4 +1,5 @@
-﻿using Rage;
+﻿using EnhancedVehicleActions2.Functions;
+using Rage;
 using RAGENativeUI;
 using RAGENativeUI.Elements;
 using System.IO;
@@ -15,6 +16,7 @@ namespace EnhancedVehicleActions2
         private static UIMenuCheckboxItem alarmKeyCheckbox;
         private static UIMenuCheckboxItem interiorLightKeyCheckbox;
         private static UIMenuCheckboxItem windowCheckbox;
+        private static UIMenuListItem engineList;
         private static UIMenuListItem seatbeltList;
         private static UIMenuListItem vehicleDoorsList;
         private static UIMenuListItem radioStationList;
@@ -25,7 +27,7 @@ namespace EnhancedVehicleActions2
         public static readonly bool isRadioStationEnabled = iniFile.ReadBoolean("Options", "toggleableRadioStation", true);
         private static readonly bool isVehicleLockEnabled = iniFile.ReadBoolean("Options", "toggleableLock", true);
         private static readonly bool isSeatbeltEnabled = iniFile.ReadBoolean("Options", "toggleableSeatbelt", true);
-        //private static readonly bool isEngineSystemEnabled = iniFile.ReadBoolean("Options", "toggleableEngine", true);
+        private static readonly bool isEngineEnabled = iniFile.ReadBoolean("Options", "toggleableEngine", true);
         private static readonly System.Windows.Forms.Keys actionKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(typeof(System.Windows.Forms.Keys), "KeyBindings", "ActionKey", System.Windows.Forms.Keys.F7);
         private static readonly ControllerButtons controllerActionKey = (ControllerButtons)iniFile.ReadEnum(typeof(ControllerButtons), "ControllerKeyBindings", "ControllerActionKey", ControllerButtons.RightThumb);
 
@@ -48,6 +50,11 @@ namespace EnhancedVehicleActions2
             mainMenu.AddItem(alarmKeyCheckbox = new UIMenuCheckboxItem("Car Alarm", false, "Toggles Car Alarm"));
             mainMenu.AddItem(interiorLightKeyCheckbox = new UIMenuCheckboxItem("Interior Light", false, "Toggles Interior Light"));
             mainMenu.AddItem(windowCheckbox = new UIMenuCheckboxItem("Vehicle Windows", true, "Rolls Up/Down Windows"));
+            if (isEngineEnabled)
+            {
+                mainMenu.AddItem(engineList = new UIMenuListItem("Engine", "Changes when engine is on", "Auto", "Always On", "Always Off"));
+                Engine.MainLogic();
+            }
             if (isSeatbeltEnabled) //checks if seatbelt is enabled to add to pool
             {
                 mainMenu.AddItem(seatbeltList = new UIMenuListItem("Seat Belt", "Changes when seatbelt is fastened", "Auto", "Always Off"));
@@ -145,9 +152,13 @@ namespace EnhancedVehicleActions2
                     EntryPoint.ToggleDefaultRadio();
                     //iniFile.Write("Options", "defaultRadioStation", "None");
                 }
-                if (list == seatbeltList)
+                else if (list == seatbeltList)
                 {
                     Seatbelt.ChangeMode(index);
+                }
+                else if (list == engineList)
+                {
+                    Engine.mode = index;
                 }
             }
         }

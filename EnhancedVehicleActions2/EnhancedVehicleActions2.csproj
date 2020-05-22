@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Functions\DoorSystem.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Functions\Engine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Functions\Seatbelt.cs" />
