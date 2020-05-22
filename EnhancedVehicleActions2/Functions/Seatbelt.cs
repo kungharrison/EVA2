@@ -47,7 +47,11 @@ namespace EnhancedVehicleActions2
                 {
                     if (Game.LocalPlayer.Character.IsGettingIntoVehicle) //Entering vehicle
                     {
-                        if (seatbeltMode == 0)
+                        if (Game.IsControlJustPressed(0, GameControl.VehicleExit))
+                        {
+                            Game.LocalPlayer.Character.Tasks.ClearSecondary();
+                        }
+                        else if (seatbeltMode == 0)
                         {
                             WearSeatbelt();
                         }
@@ -79,7 +83,7 @@ namespace EnhancedVehicleActions2
         {
             if (Game.LocalPlayer.Character.IsInAnyVehicle(false) && Game.LocalPlayer.Character.CurrentVehicle.IsCar)
             {
-                Game.LocalPlayer.Character.Tasks.PlayAnimation(seatbeltAnimation, "std_hand_off_ps_passenger", 2f, AnimationFlags.SecondaryTask).WaitForCompletion(2000);
+                Game.LocalPlayer.Character.Tasks.PlayAnimation(seatbeltAnimation, "std_hand_off_ps_passenger", 2f, AnimationFlags.SecondaryTask);
                 Game.LocalPlayer.Character.CanFlyThroughWindshields = false;
             }
         }
