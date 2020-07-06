@@ -27,6 +27,7 @@ namespace EnhancedVehicleActions2
         public static readonly bool isRadioStationEnabled = iniFile.ReadBoolean("Options", "toggleableRadioStation", true);
         private static readonly bool isVehicleLockEnabled = iniFile.ReadBoolean("Options", "toggleableLock", true);
         private static readonly bool isSeatbeltEnabled = iniFile.ReadBoolean("Options", "toggleableSeatbelt", true);
+        private static readonly bool isSeatbeltAnimationEnabled = iniFile.ReadBoolean("Options", "toggleableSeatbeltAnimation", false);
         private static readonly bool isEngineEnabled = iniFile.ReadBoolean("Options", "toggleableEngine", true);
         private static readonly System.Windows.Forms.Keys actionKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(typeof(System.Windows.Forms.Keys), "KeyBindings", "ActionKey", System.Windows.Forms.Keys.F7);
         private static readonly ControllerButtons controllerActionKey = (ControllerButtons)iniFile.ReadEnum(typeof(ControllerButtons), "ControllerKeyBindings", "ControllerActionKey", ControllerButtons.RightThumb);
@@ -59,6 +60,10 @@ namespace EnhancedVehicleActions2
             {
                 mainMenu.AddItem(seatbeltList = new UIMenuListItem("Seat Belt", "Changes when seatbelt is fastened", "Auto", "Always Off"));
                 Seatbelt.MainLogic();
+            }
+            if (isSeatbeltAnimationEnabled)
+            {
+                Seatbelt.isSeatbeltAnimation = true;
             }
             mainMenu.AddItem(vehicleDoorsList = new UIMenuListItem("Vehicle Doors", "Select which door of your vehicle to open and close", "All", "Front left", "Front right", "Rear left", "Rear right", "Hood", "Trunk"));
             if (isRadioStationEnabled) //checks if radio station is enabled to add to pool

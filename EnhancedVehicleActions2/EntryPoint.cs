@@ -1,4 +1,5 @@
-﻿using Rage;
+﻿using EnhancedVehicleActions2.Functions;
+using Rage;
 using Rage.Native;
 using System;
 using System.Security.Policy;
@@ -51,6 +52,7 @@ namespace EnhancedVehicleActions2
             System.Windows.Forms.Keys rightBlinkerKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(keysType, "KeyBindings", "RightBlinker", System.Windows.Forms.Keys.OemCloseBrackets);
             System.Windows.Forms.Keys leftBlinkerKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(keysType, "KeyBindings", "LeftBlinker", System.Windows.Forms.Keys.OemOpenBrackets);
             System.Windows.Forms.Keys hazardsKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(keysType, "KeyBindings", "Hazards", System.Windows.Forms.Keys.OemPipe);
+            System.Windows.Forms.Keys engineKey = (System.Windows.Forms.Keys)iniFile.ReadEnum(keysType, "KeyBindings", "Engine", System.Windows.Forms.Keys.None);
 
             //grabs controller keybindings from iniFile
             System.Type controllerType = typeof(ControllerButtons);
@@ -77,6 +79,18 @@ namespace EnhancedVehicleActions2
                     if (Game.LocalPlayer.Character.IsGettingIntoVehicle) //if player is getting into vehicle, activate
                     {
                         ToggleDefaultRadio(); //change radio to default
+                    }
+                    if (Game.IsKeyDown(engineKey))
+                    {
+                        int mode = Engine.mode;
+                        if (mode == 1)
+                        {
+                            Engine.mode = 2;
+                        }
+                        else if (mode == 2)
+                        {
+                            Engine.mode = 1;
+                        }
                     }
                     /*
                     if (Game.IsKeyDown(System.Windows.Forms.Keys.Scroll)) //DEBUG MODE ONLY
