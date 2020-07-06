@@ -10,11 +10,13 @@ namespace EnhancedVehicleActions2
     class Seatbelt
     {
         private static int seatbeltMode = 0; //seatbelt mode 0: auto, seatbelt mode 1: always off, sealtbelt mode 2: always on
+        private static bool isVehicleExitDisabled = false;
 
         public static void MainLogic()
         {
             GameFiber.StartNew(delegate
             {
+                PauseVehicleExit();
 
                 /*
                 if (vehicle.Exists() && Game.LocalPlayer.Character.IsGettingIntoVehicle)
@@ -64,15 +66,6 @@ namespace EnhancedVehicleActions2
                             Game.LocalPlayer.Character.Tasks.PlayAnimation(seatbeltAnimation, "std_hand_off_ps_passenger", 2f, AnimationFlags.UpperBodyOnly).WaitForCompletion(2000); Game.LocalPlayer.Character.CanFlyThroughWindshields = true;
                         }
                     }
-                    /*
-                    else if (Game.LocalPlayer.Character.IsInAnyVehicle(false)) //In vehicle
-                    {
-                        if (seatbeltMode == 0) //Seatbelt mode auto
-                        {
-                            
-                        }
-                    }*/
-
                     GameFiber.Yield();
                 }     
             });
@@ -83,9 +76,34 @@ namespace EnhancedVehicleActions2
         {
             if (Game.LocalPlayer.Character.IsInAnyVehicle(false) && Game.LocalPlayer.Character.CurrentVehicle.IsCar)
             {
+                isVehicleExitDisabled = true;
                 Game.LocalPlayer.Character.Tasks.PlayAnimation(seatbeltAnimation, "std_hand_off_ps_passenger", 2f, AnimationFlags.SecondaryTask);
                 Game.LocalPlayer.Character.CanFlyThroughWindshields = false;
             }
+        }
+
+        private static void PauseVehicleExit()
+        {
+            GameFiber.StartNew(delegate
+            {
+                while (true)
+                {
+                    if (isVehicleExitDisabled)
+                    {
+                        if (Game.IsKeyDown(System.Windows.Forms.Keys.F) || Game.IsControllerButtonDown(ControllerButtons.Y))
+                        {
+                            Game.LocalPlayer.Character.Tasks.ClearSecondary();
+                            isVehicleExitDisabled = false;
+                        }
+                        else
+                        {
+                            Game.DisableControlAction(0, GameControl.VehicleExit, true);
+                        }
+                    }
+                    GameFiber.Yield();
+                }
+            }
+            );
         }
 
         public static void ChangeMode(int mode)
